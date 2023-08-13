@@ -55,7 +55,7 @@ if (cluster.isPrimary) {
   //  Server Started listening on PORT
   serverInstance.listen(port)
 
-  //  event listeners for Server - event-name:- listening
+  //  Event listeners for Server - event-name:- listening
 
   serverInstance.on('listening', () => {
     console.log(`Worker ${process.pid} started and listening on ${port}`)

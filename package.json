@@ -1,7 +1,7 @@
 {
-  "name": "express-template",
+  "name": "brillante-assignment",
   "version": "1.0.0",
-  "description": "A template to build RESTfull API using Node.js and Express.js",
+  "description": "A RESTful api to track gold prices",
   "main": "index.js",
   "type": "module",
   "scripts": {
