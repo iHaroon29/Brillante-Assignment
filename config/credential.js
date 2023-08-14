@@ -8,4 +8,12 @@ export const credentials = {
   port: process.env.PORT,
   sslKeyPath: process.env.SSL_KEY_PATH,
   sslCertPath: process.env.SSL_CERT_PATH,
+  secretToken: process.env.SECRET_TOKEN,
 }
+
+export const goldPriceTracker = [
+  {
+    price: 4000 + Math.floor(Math.random() * 1000),
+    date: new Date().toISOString().split('T')[0],
+  },
+]

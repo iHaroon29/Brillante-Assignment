@@ -8,6 +8,7 @@ import zlib from 'zlib'
 import { maxSize, corsOptions } from './config/app.config.js'
 import { CustomError } from './error/custom.error.js'
 import router from './routes/gold.route.js'
+
 const app = express()
 
 app.use(cors(corsOptions))
@@ -20,7 +21,7 @@ app.use(morgan('tiny'))
 
 app.use((err, req, res, next) => {
   if (err.status === 400 && err.type === 'entity.parse.failed') {
-    return res.status(400).send({ message: 'Invalid JSON format!' })
+    next(CustomError.badRequest('Invalid JSON format!'))
   } else {
     next(err)
   }
@@ -40,23 +41,26 @@ app.get('/health', async (req, res, next) => {
 app.use('/api/v1', router)
 
 app.use('*', (req, res, next) => {
-  const { errType, message, status } = CustomError.invalidRoute(
-    'Invalid Route, Please check README.md for a list of available routes!'
+  next(
+    CustomError.invalidRoute(
+      'Invalid Route, Please check README.md for a list of available routes!'
+    )
   )
-  return res.status(status).send({ message, errType })
 })
 
 app.use((err, req, res, next) => {
-  if (err) {
+  const status = err.status || 500
+  if (err.status !== 500) {
     console.log(err)
-    const { message, status, errType } = CustomError.internalServerError(
-      'Internal Server Error'
-    )
-    return res.status(status).send({
-      message,
-      errType,
-    })
+    return res.status(400).send({ message: err.message, errType: err.errType })
   }
+  const { message, errType } = CustomError.internalServerError(
+    'Internal Server Error'
+  )
+  return res.status(status).send({
+    message,
+    errType,
+  })
 })
 
 export default app

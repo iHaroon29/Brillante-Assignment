@@ -1,4 +1,4 @@
-import { Schema } from 'mongoose'
+import mongoose, { Schema } from 'mongoose'
 
 const goldItemSchema = new Schema(
   {
@@ -11,33 +11,41 @@ const goldItemSchema = new Schema(
     itemPrice: {
       type: Number,
     },
-    itemPriceBest: {
-      type: Number,
-    },
-    itemPriceHighest: {
-      type: Number,
-    },
   },
   { timestamps: true }
 )
 
 goldItemSchema.statics.updateItemPrice = async function (price) {
   try {
+    const itemList = await this.find({})
+    itemList.forEach(async (item) => {
+      item.itemPrice = item.itemWeight * price
+      console.log(item)
+      await item.save(item)
+    })
   } catch (e) {
-    return e
+    next(e)
   }
 }
 
-goldItemSchema.statics.getItem = async function (query) {
+goldItemSchema.statics.getItem = async function (id, time_range) {
   try {
+    let query = {}
+    if (id) query._id = id
+    return await this.find(query, 'itemName itemWeight itemPrice').lean()
   } catch (e) {
-    return e
+    next(e)
   }
 }
 
 goldItemSchema.statics.addItem = async function (itemDetails) {
   try {
+    return await this.create(itemDetails)
   } catch (e) {
-    return e
+    next(e)
   }
 }
+
+const goldModal = mongoose.model('Gold Items', goldItemSchema)
+
+export default goldModal
