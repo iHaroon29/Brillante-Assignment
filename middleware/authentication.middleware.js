@@ -1,8 +1,14 @@
+import { credentials } from '../config/credential.js'
+import { CustomError } from '../error/custom.error.js'
+
 export const isAuthenticated = (req, res, next) => {
   try {
-    // Custom authentication middleware - examples :- JWT tokens, sessions etc
-    // if certain condition is not met, throw custom error and the error middleware will handle the rest
-    console.log('Authentication Middle-ware is called!')
+    const { token } = req.query
+    if (!token) {
+      throw CustomError.badRequest('Missing Secret Token!')
+    }
+    if (token !== credentials.secretToken)
+      throw CustomError.badRequest('Invalid Secret Token!')
     next()
   } catch (e) {
     console.log('Error in Authentication Middle-ware')

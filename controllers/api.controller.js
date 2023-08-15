@@ -12,14 +12,8 @@ const goldController = {
       time_range_max = 30,
       current = false,
       generate = false,
-      token = null,
     } = req.query
     if (generate) {
-      if (!Boolean(token)) {
-        throw CustomError.badRequest('Missing Secret Token!')
-      }
-      if (token !== credentials.secretToken)
-        throw CustomError.badRequest('Invalid Secret Token!')
       generateGoldPrice()
       return res.status(200).send({ status: 'OK' })
     }
@@ -29,29 +23,23 @@ const goldController = {
         price: goldPriceTracker[goldPriceTracker.length - 1].price,
       })
     }
-    const { price, date } = getBestPrice(
+    const { minPrice, date } = getBestPrice(
       Number(time_range_min),
       Number(time_range_max) + 1
     )
-
-    return res.status(200).send({ minGoldPrice: price, date })
+    return res.status(200).send({ minPrice, date })
   },
 
   // Controller to fetch prices for a particular Gold Item or All available items.
   async getPrice(req, res) {
-    const { id } = req.params
-    const { time_range_min = 0, time_range_max = 30 } = req.query
+    const { time_range_min = 0, time_range_max = 30, id = null } = req.query
     const itemList = await goldModal.getItem(id)
     const data = await httpRequest(
-      `http://localhost:5500/api/v1/goldPrice?time_range_min=${time_range_min}&time_range_max=${time_range_max}`
+      `http://localhost:5500/api/v1/goldPrice?time_range_min=${time_range_min}&time_range_max=${time_range_max}&token=${credentials.secretToken}`
     )
     if (data instanceof CustomError) throw data
-
     itemList.forEach((item) => {
-      item.bestPrice = Math.min(
-        data.minGoldPrice * item.itemWeight,
-        item.itemPrice
-      )
+      item.bestPrice = Math.min(data.minPrice * item.itemWeight, item.itemPrice)
       item.bestPriceDate = data.date
     })
     return res.status(200).send({ items: itemList })
@@ -59,12 +47,14 @@ const goldController = {
 
   // Controller to update prices for a particular Gold Item or All available items.
   async updatePrice(req, res) {
+    const { id } = req.query
     const data = await httpRequest(
-      `http://localhost:5500/api/v1/goldPrice?current=${true}`
+      `http://localhost:5500/api/v1/goldPrice?current=${true}&token=${
+        credentials.secretToken
+      }`
     )
-    console.log(data)
     if (data instanceof CustomError) throw data
-    await goldModal.updateItemPrice(data.price)
+    await goldModal.updateItemPrice(id, data.price)
     return res.status(200).send({ status: 'OK' })
   },
 

@@ -15,16 +15,17 @@ const goldItemSchema = new Schema(
   { timestamps: true }
 )
 
-goldItemSchema.statics.updateItemPrice = async function (price) {
+goldItemSchema.statics.updateItemPrice = async function (id = null, price) {
   try {
-    const itemList = await this.find({})
+    let query = {}
+    if (id) query._id = id
+    const itemList = await this.find(query)
     itemList.forEach(async (item) => {
       item.itemPrice = item.itemWeight * price
-      console.log(item)
       await item.save(item)
     })
   } catch (e) {
-    next(e)
+    console.log(e.message)
   }
 }
 
@@ -34,7 +35,7 @@ goldItemSchema.statics.getItem = async function (id, time_range) {
     if (id) query._id = id
     return await this.find(query, 'itemName itemWeight itemPrice').lean()
   } catch (e) {
-    next(e)
+    console.log(e.message)
   }
 }
 
@@ -42,7 +43,7 @@ goldItemSchema.statics.addItem = async function (itemDetails) {
   try {
     return await this.create(itemDetails)
   } catch (e) {
-    next(e)
+    console.log(e.message)
   }
 }
 

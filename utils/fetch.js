@@ -4,7 +4,8 @@ export const httpRequest = async function (url, options = {}) {
   try {
     const response = await fetch(url, options)
     if (!response.ok) {
-      throw CustomError.externalResponseError('API_ERROR', 404)
+      const { message } = await response.json()
+      throw CustomError.externalResponseError(message, 404)
     }
     return await response.json()
   } catch (e) {

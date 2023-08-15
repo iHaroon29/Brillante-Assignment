@@ -11,9 +11,6 @@ export const credentials = {
   secretToken: process.env.SECRET_TOKEN,
 }
 
-export const goldPriceTracker = [
-  {
-    price: 4000 + Math.floor(Math.random() * 1000),
-    date: new Date().toISOString().split('T')[0],
-  },
-]
+export const goldPriceTracker = Array(30)
+  .fill(4000)
+  .map((node) => node + Math.floor(Math.random() * 1000))

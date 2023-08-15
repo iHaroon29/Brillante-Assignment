@@ -51,7 +51,6 @@ app.use('*', (req, res, next) => {
 app.use((err, req, res, next) => {
   const status = err.status || 500
   if (err.status !== 500) {
-    console.log(err)
     return res.status(400).send({ message: err.message, errType: err.errType })
   }
   const { message, errType } = CustomError.internalServerError(

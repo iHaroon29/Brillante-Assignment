@@ -21,7 +21,7 @@ const generatePriceJob = cron.schedule('0 0 0 * * *', async () => {
   }
 })
 
-const updatePriceJob = cron.schedule('0 2 * * * *', async () => {
+const updatePriceJob = cron.schedule('0 2 0 * * *', async () => {
   try {
     const response = await fetch(`http://localhost:5500/api/v1/itemPrices`, {
       method: 'PATCH',
