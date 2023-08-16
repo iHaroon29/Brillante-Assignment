@@ -62,7 +62,7 @@ The following a simple express.js application that makes an external request to 
 
 ## Additional Information :
 
-An .env.example file is provided which give insight on various environmental variables used for the project. due to security reasons I won't be sharing my mongoDB atlus URL, feel free to fill the missing variables after creating a .env file.
+An .env.example file is provided which give insight on various environmental variables used for the project. due to security reasons I won't be sharing my mongoDB atlus URL, feel free to fill the missing variables after creating a .env file. You will also need to include few products by following the schema i've written by using the POST request present it the routes file, i would loved to automate that process as well so that you have a set of products ready to use from the get go.
 
 ## Project Structure
 
