@@ -1,6 +1,6 @@
 # Express.js RESTful API Template
 
-The following a simple express.js application that makes an external request to a goldPriceTracker and updates prices accordingly for the items available in the datebase.
+The following a simple express.js application that makes an external request to a goldPriceTracker and updates prices accordingly for the items available in the datebase. Video Link - https://drive.google.com/file/d/1AG9cFV1SgULmOs7ROvtExETUPE_s_iBT/view?usp=drive_link
 
 ## Table of Contents
 
@@ -9,10 +9,9 @@ The following a simple express.js application that makes an external request to 
 - [Getting Started](#getting-started)
   - [Installation](#installation)
   - [Usage](#usage)
+  - [Additional Information](#additional-information)
 - [Project Structure](#project-structure)
 - [Routes](#routes)
-- [Middleware](#middleware)
-- [Contributing](#contributing)
 - [License](#license)
 
 ## Features
@@ -61,7 +60,7 @@ The following a simple express.js application that makes an external request to 
    npm test
    ```
 
-## Addition Information :
+## Additional Information :
 
 An .env.example file is provided which give insight on various environmental variables used for the project. due to security reasons I won't be sharing my mongoDB atlus URL, feel free to fill the missing variables after creating a .env file.
 
@@ -116,7 +115,9 @@ The following are the available routes and their responses:
 
 Returns a simple message indicating the health of the API and current date.
 
-#### Example Response:
+#### Response:
+
+`on success`
 
 ```json
 {
@@ -125,22 +126,42 @@ Returns a simple message indicating the health of the API and current date.
 }
 ```
 
+`on failure`
+
+```json
+{
+  "message": "Internal Server Error",
+  "errType": "Server"
+}
+```
+
 ### GET `/api/v1/goldPrice?`
 
 #### Query Parameters
 
-- Generate = boolean value
+- generate = boolean value
 - token = string
 
 #### Description
 
 GET request to the gold tracker endpoint to generate a new price value.
 
-#### Example Response:
+#### Response:
+
+`on success`
 
 ```json
 {
   "status": "OK"
+}
+```
+
+`on failure`
+
+```json
+{
+  "message": " Missing Token || Invalid Token || Internal Server Error",
+  "errType": "Type of Error (Client / Server)"
 }
 ```
 
@@ -155,11 +176,22 @@ GET request to the gold tracker endpoint retrieve current price of gold.
 - current = boolean value
 - token = string
 
-#### Example Response:
+#### Response:
+
+`on success`
 
 ```json
 {
   "price": "current-price-here"
+}
+```
+
+`on failure`
+
+```json
+{
+  "message": " Missing Token || Invalid Token || Generic Server Error",
+  "errType": "Type of Error (Client / Server)"
 }
 ```
 
@@ -176,9 +208,21 @@ GET request to the gold tracker endpoint retrieve min price of gold in said rang
 
 #### Example Response:
 
+`on success`
+
 ```json
 {
-  "price": "current-price-here"
+  "minPrice": "current-price-here",
+  "date": "date on which min price was generated"
+}
+```
+
+`on failure`
+
+```json
+{
+  "message": "Invalid time_max_range || Missing Token || Invalid Token || Generic Server Error",
+  "errType": "Type of Error (Client / Server)"
 }
 ```
 
@@ -192,11 +236,22 @@ GET request to the gold tracker endpoint retrieve min price of gold in said rang
 
 GET request to our API endpoint retrieve current and best prices of items min in said range. Values of min_range and max_range vary between [1,30]. The endpoint returns an array of items containing their current prices and best prices.
 
-#### Example Response:
+#### Response:
+
+`on success`
 
 ```json
 {
   "items": "item-list-here"
+}
+```
+
+`on failure`
+
+```json
+{
+  "message": "Invalid time_max_range || Generic Server Error",
+  "errType": "Type of Error (Client / Server)"
 }
 ```
 
@@ -210,11 +265,22 @@ GET request to our API endpoint retrieve current and best prices of items min in
 
 GET request to our API endpoint retrieve current and best prices of item. The endpoint returns an array of items containing their current prices and best prices between the range [0,30]
 
-#### Example Response:
+#### Response:
+
+`on success`
 
 ```json
 {
   "items": "item-list-here"
+}
+```
+
+`on failure`
+
+```json
+{
+  "message": "Invalid ID string || Generic Server Error",
+  "errType": "Type of Error (Client / Server)"
 }
 ```
 
@@ -229,11 +295,22 @@ GET request to our API endpoint retrieve current and best prices of item. The en
 
 GET request to our API endpoint retrieve current and best prices of item. The endpoint returns an array of items containing their current prices and best prices between the given range.
 
-#### Example Response:
+#### Response:
+
+`on success`
 
 ```json
 {
   "items": "item-list-here"
+}
+```
+
+`on failure`
+
+```json
+{
+  "message": "Invalid ID string || Invalid time_range_max || Generic Server Error",
+  "errType": "Type of Error (Client / Server)"
 }
 ```
 
@@ -247,11 +324,22 @@ GET request to our API endpoint retrieve current and best prices of item. The en
 
 PATCH request to our API endpoint to update the prices of items or a single item.
 
-#### Example Response:
+#### Response:
+
+`on success`
 
 ```json
 {
   "status": "OK"
+}
+```
+
+`on failure`
+
+```json
+{
+  "message": "Generic Server Error",
+  "errType": "Type of Error (Client / Server)"
 }
 ```
 
