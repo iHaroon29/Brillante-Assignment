@@ -1,7 +1,10 @@
 import { Router } from 'express'
 import tryCatch from '../utils/tryCatch.js'
 import goldController from '../controllers/api.controller.js'
-import { getPriceQueryValidation } from '../middleware/validation.middleware.js'
+import {
+  getPriceQueryValidation,
+  goldPriceQueryValidation,
+} from '../middleware/validation.middleware.js'
 import { isAuthenticated } from '../middleware/authentication.middleware.js'
 
 const router = Router()
@@ -12,6 +15,7 @@ router.post('/item', tryCatch(goldController.addItem))
 // API Endpoint to fetch Current Gold price/ Generate Gold Price/ Fetch min gold-price between day range
 router.get(
   '/goldPrice?',
+  goldPriceQueryValidation,
   isAuthenticated,
   tryCatch(goldController.generatePrice)
 )

@@ -1,6 +1,6 @@
 # Express.js RESTful API Template
 
-This template provides a simple and organized starting point for building RESTful APIs using Express.js.
+The following a simple express.js application that makes an external request to a goldPriceTracker and updates prices accordingly for the items available in the datebase.
 
 ## Table of Contents
 
@@ -17,14 +17,14 @@ This template provides a simple and organized starting point for building RESTfu
 
 ## Features
 
-- Basic project structure for building RESTful APIs.
-- Pre-configured Express.js app with necessary middleware.
-- Example routes and controllers to demonstrate API functionality.
-- Built-in error handling middleware for consistent error responses.
+- An Express.js application harnessing the power of Node.js and MongoDB and pre-configured with necessary middleware and error handling.
+- Includes routes to fetch and update item prices accordingly.
+- Utilizes native Fetch (Node.js finally support native Fetch API) to make HTTP requests to the goldTracker API.
+- Includes Basic API Testing and Cron-job setup scripts to automate price updation process.
 
 ## Requirements
 
-- Node.js (version >= 12)
+- Node.js (version >= 16)
 - npm or yarn
 
 ## Getting Started
@@ -34,8 +34,8 @@ This template provides a simple and organized starting point for building RESTfu
 1. Clone this repository:
 
    ```bash
-   git clone https://github.com/iHaroon29/Express-Template.git
-   cd express-template
+   git clone https://github.com/iHaroon29/Brillante-Assignment.git
+   cd brillante-assignment
    ```
 
 2. Install dependencies:
@@ -46,15 +46,24 @@ This template provides a simple and organized starting point for building RESTfu
 
 ### Usage
 
-1. Define your API routes in the `routes` directory.
-2. Implement your controllers in the `controllers` directory.
-3. Run the server:
+1. Run the server:
 
    ```bash
-   npm start
+   npm run start:dev
    ```
 
-   Your API will be accessible at `http://localhost:${port}`.
+   Your API will be accessible at `http://localhost:5500`.
+
+2. Postman collection has been provided in the github to import the API into postman
+3. Run Tests:
+
+   ```bash
+   npm test
+   ```
+
+## Addition Information :
+
+An .env.example file is provided which give insight on various environmental variables used for the project. due to security reasons I won't be sharing my mongoDB atlus URL, feel free to fill the missing variables after creating a .env file.
 
 ## Project Structure
 
@@ -62,64 +71,192 @@ The project structure follows a basic organization for an Express.js app:
 
 ```
 express-rest-api-template/
+├── config/
+│   ├── app.config.js
+│   └── ...
 ├── controllers/
 │   ├── example.controller.js
 │   └── ...
+├── jobs/
+│   └── api.jobs.js
 ├── middleware/
 │   ├── authenication.middleware.js
 │   └── ...
 ├── routes/
-│   ├── example.route.js
-│   └── ...
+│   └── gold.route.js
+├── schema/
+│   └── gold.schema.js
 ├── test
-|   ├──example.test.js
+|   └── api.test.js
 ├── app.js
 └── index.js
 └── ...
-
 ```
 
 - `controllers`: Contains your route handlers and business logic.
-- `middleware`: Contains custom middleware, including the error handler.
+- `config`: Contains app configurations.
+- `jobs`:Contain files to setup cron-jobs.
+- `middleware`: Contains custom middleware, including the validation and authentication middleware.
 - `routes`: Defines your API routes and connects them to controllers.
 - `test`:Contains tests for API end points.
-- `app.js`: Contains express configurations.
+- `schema`:Contains mongoose schema.
+- `test`:Contains basic API test written in chai.
+- `app.js`: Is a setup file for express application.
 - `index.js`: Main entry point of your HTTP/HTTPS Server.
 
 ## Routes
 
-Define your API routes in the `routes` directory. For example:
+The following are the available routes and their responses:
 
-```javascript
-// routes/exampleRoutes.js
+##### Base-URL `http://localhost:5500`
 
-import { Router } from 'express'
-import tryCatch from '../utils/tryCatch.js'
-import { exampleController } from '../controllers/example.controller.js'
+### GET /api/v1/health
 
-// Define routes and their associated controller methods
-const router = Router()
-router.get('/example/:test', tryCatch(exampleController.getExample))
+#### Description
 
-export default router
+Returns a simple message indicating the health of the API and current date.
+
+#### Example Response:
+
+```json
+{
+  "message": "Healthy :)",
+  "date": "today's date-here"
+}
 ```
 
-## Middleware
+### GET `/api/v1/goldPrice?`
 
-The `middleware` directory contains custom middleware, including an isAuthenticated Middleware. Feel free to add more middleware as needed.
+#### Query Parameters
 
-## Tests
+- Generate = boolean value
+- token = string
 
-The `test` directory contains custom tests, Feel free to add more as needed.
+#### Description
 
-## Contributing
+GET request to the gold tracker endpoint to generate a new price value.
 
-Contributions are welcome! If you find a bug or want to add a feature, feel free to open an issue or submit a pull request.
+#### Example Response:
+
+```json
+{
+  "status": "OK"
+}
+```
+
+### GET `/api/v1/goldPrice?`
+
+#### Description
+
+GET request to the gold tracker endpoint retrieve current price of gold.
+
+#### Query Parameters
+
+- current = boolean value
+- token = string
+
+#### Example Response:
+
+```json
+{
+  "price": "current-price-here"
+}
+```
+
+### GET `/api/v1/goldPrice?`
+
+#### Query Parameters
+
+- time_range_max = number value
+- token = string
+
+#### Description
+
+GET request to the gold tracker endpoint retrieve min price of gold in said range. Values of min_range and max_range vary between [1,30]
+
+#### Example Response:
+
+```json
+{
+  "price": "current-price-here"
+}
+```
+
+### GET `/api/v1/item?`
+
+#### Query Parameters
+
+- time_range_max = number value
+
+#### Description
+
+GET request to our API endpoint retrieve current and best prices of items min in said range. Values of min_range and max_range vary between [1,30]. The endpoint returns an array of items containing their current prices and best prices.
+
+#### Example Response:
+
+```json
+{
+  "items": "item-list-here"
+}
+```
+
+### GET `/api/v1/item?`
+
+#### Query Parameters
+
+- id = ( string - type of ObjectID ) || null
+
+#### Description
+
+GET request to our API endpoint retrieve current and best prices of item. The endpoint returns an array of items containing their current prices and best prices between the range [0,30]
+
+#### Example Response:
+
+```json
+{
+  "items": "item-list-here"
+}
+```
+
+### GET `/api/v1/item?`
+
+#### Query Parameters
+
+- id = ( string - type of ObjectID )
+- time_range_max = number value
+
+#### Description
+
+GET request to our API endpoint retrieve current and best prices of item. The endpoint returns an array of items containing their current prices and best prices between the given range.
+
+#### Example Response:
+
+```json
+{
+  "items": "item-list-here"
+}
+```
+
+### PATCH `/api/v1/item`
+
+#### Query Parameters
+
+- id = ( string - type of ObjectID ) || null
+
+#### Description
+
+PATCH request to our API endpoint to update the prices of items or a single item.
+
+#### Example Response:
+
+```json
+{
+  "status": "OK"
+}
+```
 
 ## License
 
 This project is licensed under the [ISC License](LICENSE).
 
 ---
-
-Feel free to customize this README according to your project's specific details and needs. This template provides a starting point for creating Express.js-based RESTful APIs and serves as a guide for developers who want to understand your project's structure and how to use it.

@@ -24,3 +24,7 @@ export const getBestPrice = function (min = 0, max = 30) {
     console.log(e)
   }
 }
+
+export const getCurrentPrice = function () {
+  return goldPriceTracker[0]
+}

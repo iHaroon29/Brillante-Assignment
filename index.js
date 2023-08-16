@@ -19,7 +19,7 @@ if (envAvailable.indexOf(env) === -1) {
 const httpsOptions =
   process.env.nodeEnv === 'PRODUCTION'
     ? {
-        key: fs.readFileSync(credentials.sslKeyPath),
+        key: fs.readFile(credentials.sslKeyPath),
         cert: fs.readFileSync(credentials.sslCertPath),
       }
     : null

@@ -1,0 +1,141 @@
+{
+	"info": {
+		"_postman_id": "0b422f40-a067-42a0-93d6-88bb0ff71daf",
+		"name": "Brillante-Assignment",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14277613"
+	},
+	"item": [
+		{
+			"name": "Add items to DB endpoint",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"itemName\": \"Diamond Ring\",\r\n    \"itemWeight\": 30,\r\n    \"itemPrice\": 0,\r\n    \"itemPriceBest\": 0,\r\n    \"itemPriceHighest\": 0\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5500/api/v1/item",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5500",
+					"path": [
+						"api",
+						"v1",
+						"item"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch prices for items from DB",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5500/api/v1/item?time_range_max=-1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5500",
+					"path": [
+						"api",
+						"v1",
+						"item"
+					],
+					"query": [
+						{
+							"key": "time_range_max",
+							"value": "-1"
+						},
+						{
+							"key": "id",
+							"value": "9asd123",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Items in the DB with prices",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5500/api/v1/item",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5500",
+					"path": [
+						"api",
+						"v1",
+						"item"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "64d9c8c07178013d59c5b8bf",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GoldTracker Endpoint to Generate a new Price/ Fetch Current Price/ Fetch Min price between range",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5500/api/v1/goldPrice?time_range_max=10&token=4d800187244d3b704e2c",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5500",
+					"path": [
+						"api",
+						"v1",
+						"goldPrice"
+					],
+					"query": [
+						{
+							"key": "current",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "generate",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "time_range_max",
+							"value": "10"
+						},
+						{
+							"key": "token",
+							"value": "4d800187244d3b704e2c"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

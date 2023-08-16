@@ -2,40 +2,34 @@ import { credentials, goldPriceTracker } from '../config/credential.js'
 import { CustomError } from '../error/custom.error.js'
 import goldModal from '../schema/gold.schema.js'
 import { httpRequest } from '../utils/fetch.js'
-import { generateGoldPrice, getBestPrice } from '../utils/gold.utils.js'
+import {
+  generateGoldPrice,
+  getBestPrice,
+  getCurrentPrice,
+} from '../utils/gold.utils.js'
 
 const goldController = {
   // Controller to Generate Random Gold Prices
   generatePrice(req, res) {
-    const {
-      time_range_min = 0,
-      time_range_max = 30,
-      current = false,
-      generate = false,
-    } = req.query
+    const { time_range_max = 30, current = false, generate = false } = req.query
     if (generate) {
       generateGoldPrice()
       return res.status(200).send({ status: 'OK' })
     }
     if (current) {
-      return res.status(200).send({
-        date: goldPriceTracker[goldPriceTracker.length - 1].date,
-        price: goldPriceTracker[goldPriceTracker.length - 1].price,
-      })
+      const currentPrice = getCurrentPrice()
+      return res.status(200).send({ price: currentPrice })
     }
-    const { minPrice, date } = getBestPrice(
-      Number(time_range_min),
-      Number(time_range_max) + 1
-    )
+    const { minPrice, date } = getBestPrice(0, Number(time_range_max) + 1)
     return res.status(200).send({ minPrice, date })
   },
 
   // Controller to fetch prices for a particular Gold Item or All available items.
   async getPrice(req, res) {
-    const { time_range_min = 0, time_range_max = 30, id = null } = req.query
+    const { time_range_max = 30, id = null } = req.query
     const itemList = await goldModal.getItem(id)
     const data = await httpRequest(
-      `http://localhost:5500/api/v1/goldPrice?time_range_min=${time_range_min}&time_range_max=${time_range_max}&token=${credentials.secretToken}`
+      `http://localhost:5500/api/v1/goldPrice?time_range_max=${time_range_max}&token=${credentials.secretToken}`
     )
     if (data instanceof CustomError) throw data
     itemList.forEach((item) => {
